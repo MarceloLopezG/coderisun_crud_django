@@ -6,7 +6,7 @@ Paquetes que debe de instalar:
  - pip install djangorestframework
  
  
- --	  python manage.py makemigrations
+ - -	python manage.py makemigrations
  - -	python manage.py migrate
  
  
