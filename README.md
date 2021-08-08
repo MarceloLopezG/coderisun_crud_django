@@ -5,7 +5,7 @@ Paquetes que debe de instalar:
  - pip install psycopg2
  - pip install djangorestframework
  
- 
+Migración: 
  - -	python manage.py makemigrations
  - -	python manage.py migrate
  
