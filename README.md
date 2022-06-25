@@ -18,6 +18,7 @@ Pasos para ejecutar el proyecto.
  <br/>
  . pip install django==3.2.5
 <br/>
+<br/>
 
 2.- Clonar y acceder al proyecto
 <br/>
