@@ -4,8 +4,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework import status
+
+
 
 class Login(ObtainAuthToken):    
     def post(self, request):
@@ -21,11 +23,16 @@ class Login(ObtainAuthToken):
             return Response({
                 'token': token.key,
                 'pk':user.pk,
-            }) 
+                'username':user.username
+                }) 
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
     
 
+
 class Logout(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated, AllowAny)
+
     def post(self, request):
         request.user.auth_token.delete()
         return Response(status=status.HTTP_200_OK)

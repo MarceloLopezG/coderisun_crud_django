@@ -1,14 +1,27 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated 
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.contrib.auth.models import User
 from users.forms import UserForm
 from django.http import JsonResponse
+import hashlib
+
+
 
 class RegisterUsers(APIView):
+    #Create
     def post(self, request, format=None):
-        register = UserForm(data=request.data)
+        datas = request.data
+
+        email = datas['email']
+        username = hashlib.md5(email.encode()).hexdigest()
+        first_name = datas['first_name']
+        last_name = datas['last_name']
+        password = datas['password']
+
+        new_data = {'username': str(username),'first_name': first_name,'last_name': last_name,'email':email,'password': password}
+        register = UserForm(data=new_data)
 
         if register.is_valid():
             user = register.save()
@@ -19,18 +32,35 @@ class RegisterUsers(APIView):
         else:
             return Response(status = status.HTTP_400_BAD_REQUEST) 
 
+
+
 class UserDetails(APIView):
-    permission_classes = (IsAuthenticated,)
-    def get(self, request, id, format=None, *args, **kwargs):
-        user = User.objects.get(pk=id)
+    permission_classes = (IsAuthenticated, AllowAny)
+    #Index
+    def get(self, request, username, *args, **kwargs):
+        user = User.objects.get(username=username)
         userinformation = [{ 'username': user.username, 'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email }]
         return JsonResponse(userinformation, safe=False)
 
-    permission_classes = (IsAuthenticated,)
-    def put(self, request, id, *args, **kwargs):
-        user = User.objects.get(pk=id)
-        updateUser = UserForm(request.data, instance=user)
 
+
+    #Update
+    def put(self, request, username, *args, **kwargs):
+        datas = request.data
+        email = datas['email']
+        first_name = datas['first_name']
+        last_name = datas['last_name']
+        password = datas['password']
+
+        user = User.objects.get(username=username)
+        
+        if username == user.username:
+            new_data = {'username': user.username,'first_name': first_name,'last_name': last_name,'email':email,'password': password}
+        else:
+            username = hashlib.md5(email.encode()).hexdigest()
+            new_data = {'username': str(username),'first_name': first_name,'last_name': last_name,'email':email,'password': password}
+
+        updateUser = UserForm(new_data, instance=user)
         if updateUser.is_valid():
             user = updateUser.save()
             pw = user.password
@@ -40,9 +70,8 @@ class UserDetails(APIView):
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
     
-    
-    permission_classes = (IsAuthenticated,)
-    def delete(self, request, id):
-        user = User.objects.get(pk=id)
+
+    def delete(self, request, username):
+        user = User.objects.get(username=username)
         user.delete()
         return Response(status=status.HTTP_200_OK)
