@@ -94,15 +94,16 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
+# agregar
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
 'DEFAULT_PERMISSION_CLASSES': []
 }
+#
 
-
-#hash
+# agregar esta parte del hash
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
@@ -132,8 +133,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-CORS_ALLOW_ALL_ORIGINS = True
+# Este es para el CORS
+CORS_ALLOW_ALL_ORIGINS = True # agregar
 
 
 # Internationalization
